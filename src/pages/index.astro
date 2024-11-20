@@ -1,0 +1,28 @@
+---
+import fs from "node:fs";
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SheetAnchor from "../components/SheetAnchor.astro";
+
+const content = fs.readdirSync(process.cwd() + "/src/content", {
+    withFileTypes: true,
+});
+
+const sheetNames = content.filter(dir => dir.isDirectory()).map(dir => dir.name.toLowerCase());
+---
+
+<BaseLayout title="Matt's Cheatsheets and Hacks">
+    <div>
+        {sheetNames.map(name => <SheetAnchor to={name} img={name} />)}
+    </div>
+</BaseLayout>
+
+<style>
+    div {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+</style>

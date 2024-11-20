@@ -1,0 +1,48 @@
+---
+import fs from "node:fs";
+import path from "node:path";
+import { getCollection } from "astro:content";
+
+import BaseLayout from "layouts/BaseLayout.astro";
+import Accordion from "components/Accordion.astro";
+import DynamicColumns from "components/DynamicColumns.astro";
+
+export function getStaticPaths() {
+    const content = fs.readdirSync(path.join("src", "content"), {
+        withFileTypes: true,
+    });
+
+    const sheets = content.filter(entry => entry.isDirectory()).map(entry => entry.name);
+
+    return sheets.map(sheet => ({
+        params: { sheet: sheet.toLowerCase() },
+        props: { sheet },
+    }));
+}
+
+const { sheet } = Astro.props;
+import(`../styles/${sheet}.css`);
+
+// @ts-expect-error: "getCollection" expects existing collection names, but "sheet" is any string
+const entries = await getCollection(sheet).then(collection =>
+    collection.sort((a, b) => Number(a.id.match(/^\d+/)) - Number(b.id.match(/^\d+/)))
+);
+---
+
+<BaseLayout title={sheet}>
+    <div class="sheet">
+        {
+            entries.map(async entry => {
+                const title = entry.id.match(/^\d+-(.*).mdx?$/)![1];
+                const { Content } = await entry.render();
+
+                return (
+                    <Accordion title={title}>
+                        {/* Passing components to the Content element makes them available in the MDX file without the need of importing them there. This also fixes an issue where components imported into MDX files don't have their CSS rendered */}
+                        <Content components={{ DynamicColumns }} />
+                    </Accordion>
+                );
+            })
+        }
+    </div>
+</BaseLayout>

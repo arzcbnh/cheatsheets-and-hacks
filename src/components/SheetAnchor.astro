@@ -1,0 +1,20 @@
+---
+const { to, img } = Astro.props;
+---
+
+<a href={to}>
+    <img src={img} />
+</a>
+
+<style>
+    a {
+        display: block;
+        padding: 0.5rem;
+        border: 1px solid gray;
+        border-radius: 3px;
+    }
+
+    img {
+        max-width: 2rem;
+    }
+</style>

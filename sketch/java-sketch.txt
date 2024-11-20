@@ -1,0 +1,189 @@
+### Quirks
+- No variable shadowing.
+- Strings are _not_ arrays, so an index has to be accessed by calling `charAt()`.
+- For assigning constant methods and variables, use `final` instead of `const`. It can also be used with methods and classes to prevent overriding and inheritance.
+- `if` statements only accept expressions of boolean type; that is, 0, 1, and other values are *not* valid as conditionals.
+- There's no unsigned integer type, but there's the ...
+- `short`, `int`, and `long` are always respectively 16-bit, 32-bit, and 64-bit, regardless of platform.
+- All primitives can be coerced into strings when doing string concatenation. Objects can be coerced too by defining the method `toString()` on them.
+- Switch-case expression may be an integer or a string.
+- For 8-bit integers, there is `byte`. `char` is a 16-bit integer _actually_ used for representing characters. This also means Unicode characters outside of the BPM can't be represented in a single char, because Java uses UTF-16.
+
+### Features
+- Multi-line strings
+- There's a class `Object` which is a superclass of all other classes and has many general methods that can be used or overriden.
+
+### Conversion, casting, and type promotion
+
+- Literal numbers are always either `int` or `double`.
+- All operands of an expression are converted to `int`, `long`, `float`, and `double`, on that order, depending on the type of the operands.
+- Smaller types are stored in larger types automatically (widening conversion), but larger types have to be cast and truncated when storing them in smaller types (narrowing conversion).
+
+```java
+// Literal integers are checked at compile time
+long a = 5000; // Automatic widening conversion of 'int' to 'long'
+byte b = 180;  // Automatic narrowing conversion of 'int' to 'byte'
+
+// That can't be done with variables, so casting the result is required
+byte b = 50;
+b = (byte) (b * 50);
+
+// Without casting '1' to 'float', the expression would evaluate to 0 instead of
+// 0.5 because both '1' and '2' are integers. That's not required if one of the
+// operands is written as a double
+float f = (float) 1 / 2;
+double g = 1.0 / 2;
+```
+
+### Type inference
+
+```java
+var status = true;
+var name = "Matheus";
+var ctrl = new Controller();
+
+// Remember that number literals are either 'int' or 'double'
+var lenght = 100; // 'int'
+var height = 5.1; // 'double'
+```
+
+### Arrays
+
+```java
+int[] weekdays = new int[7];
+var monthdays = new int[31];
+
+// Access an array's length
+System.out.println(weekdays.length); // Output: 7
+
+// N-dimensional arrays
+byte[][] bitmap = new byte[3][2];
+
+// Only the first dimension must be declared
+var pyramid = new boolean[4][];
+pyramid[0] = new boolean[4];
+pyramid[1] = new boolean[3];
+pyramid[2] = new boolean[2];
+pyramid[3] = new boolean[1];
+
+// With an array initializer, type inference is not possible
+int[] marks = { 7, 9, 6, 10, 9 };
+byte[][] image = {
+    { 100, 90, 170 },
+    { 30, 10, 245 }
+};
+```
+
+### Enhanced for-loop
+
+The iteration variable is read-only, thus a normal for-loop is required for changing the values of an array.
+
+```java
+int[] nums = { 3, 4, 5, 6, 7, 8 };
+int sum = 0;
+
+for (int n: nums) sum += n;
+
+// May also infer type
+for (var n: nums) sum += n;
+```
+
+### Classes
+
+- By default, a member of a class is public within its own package, but cannot be accessed outside of its package.
+- Private class members can't be accessed by subclasses.
+
+```java
+class Example {
+    // Default access fields and method
+    int a, b;
+
+    int defMethod() { /* ... */ }
+
+    // Constructor
+    Example() {
+        a = 10;
+        // ...
+    }
+
+    // Static fields, method, and initializer
+    static double f, g;
+
+    static double statMethod() { /* ... */ }
+
+    static {
+        f = 2.5;
+        // ...
+    }
+}
+
+// Subclass
+class Sub extends Example {
+    // Constructor, calling the superclass constructor when it has no parameters
+    // is not necessary
+    Sub() {
+        super();
+        // ...
+    }
+
+    // An override
+    int defMethod() {
+        super.defMethod();
+        // ...
+    }
+}
+```
+
+### Overloading
+
+```java
+class Overload {
+    Overload() {
+        System.out.println(1);
+    }
+
+    Overload(double v) {
+        System.out.println(v);
+    }
+
+    Overload(int a, int b) {
+        System.out.println(a + " " + b);
+    }
+}
+
+class Example {
+    public static void main(String[] args) {
+        new Overload();     // Output: 1
+        new Overload(2.5);  // Output: 2.5
+        new Overload(1, 2); // Output: 3
+
+        // Passing an int converts it to a double due to the overload
+        new Overload(4);    // Output: 4.0
+    }
+}
+```
+
+### Abstract classes
+
+- Abstract classes can't have abstract constructors or static members.
+- Subclasses must either be abstract too or implement all methods.
+- There can be no instances of abstract classes, but there can be references.
+
+```java
+abtract class Shape {
+    // Abstract method
+    abstract void area();
+
+    // Normal method
+    void doubleSize() { /* ... */ }
+
+    // ...
+}
+
+class Square extends Shape {
+    // Implementation of abstract method
+    void area() { /* ... */ }
+
+    // ...
+};
+```

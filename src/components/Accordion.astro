@@ -1,0 +1,49 @@
+---
+const { title } = Astro.props;
+---
+
+<div class="accordion">
+    <div class="accordion_head">
+        <h2 class="accordion_title">
+            {title}
+        </h2>
+        <svg class="accordion_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" x="0px" y="0px">
+            <use xlink:href="assets/dropdowns.svg#default" />
+        </svg>
+    </div>
+    <!-- Without a wrapper, the body padding is not hidden when the height is set to 0 -->
+    <div class="accordion_bodyWrapper">
+        <div class="accordion_body">
+            <slot />
+        </div>
+    </div>
+</div>
+
+<script>
+    function setListener(accordion: Element) {
+        const wrapper = accordion.querySelector(".accordion_bodyWrapper") as HTMLElement;
+        const head = accordion.querySelector(".accordion_head") as HTMLElement;
+        const body = wrapper.querySelector(".accordion_body") as HTMLElement;
+
+        let isOpen = false;
+        const hideBody = () => {
+            // Check for 'isOpen' because clicking too quickly may leave an empty body
+            if (!isOpen) body.style.display = "none";
+        };
+
+        head.addEventListener("click", () => {
+            if (isOpen) {
+                wrapper.addEventListener("transitionend", hideBody, { once: true });
+                wrapper.style.height = "";
+            } else {
+                body.style.display = "block";
+                wrapper.style.height = wrapper.scrollHeight + "px";
+            }
+
+            accordion.classList.toggle("-toggled");
+            isOpen = !isOpen;
+        });
+    }
+
+    document.querySelectorAll(".accordion").forEach(setListener);
+</script>

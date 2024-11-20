@@ -1,0 +1,51 @@
+@font-face {
+    font-display: fallback;
+    font-family: "Noto Sans";
+    font-style: normal;
+    font-weight: 400;
+    src: url("assets/fonts/noto-sans-v37-latin-regular.woff2") format("woff2");
+}
+
+:root {
+    --primary-color: #3178c6;
+    --secondary-color: #235a97;
+    --div-color: #262626;
+    --background-color: #faf9f8;
+
+    font-family: "Noto Sans";
+}
+
+.topBar {
+    background: var(--primary-color);
+    border: unset;
+}
+
+.accordion {
+    border-color: black;
+    border-radius: 0;
+}
+
+.accordion_head {
+    color: black;
+    background: white;
+}
+
+.accordion_body {
+    color: black;
+    background: white;
+    border-radius: 0;
+}
+
+.accordion.-toggled {
+    background: white;
+    border-color: var(--primary-color);
+
+    .accordion_head {
+        background: var(--primary-color);
+    }
+}
+
+.bottomBar {
+    background-color: var(--primary-color);
+    border: unset;
+}
